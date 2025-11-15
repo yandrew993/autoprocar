@@ -1,0 +1,14 @@
+@import './styles/variables';
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: $text;
+  background-color: $background;
+  position: relative;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
