@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './Navbar.scss';
+import UserAuth from './UserAuth';
+import UserAppointments from './UserAppointments';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userModal, setUserModal] = useState(false);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
     // Sticky navigation
@@ -56,9 +60,17 @@ const Navbar = () => {
           </ul>
           <div className="nav-cta">
             <a href="#booking" className="cta-button">Book Appointment</a>
+            <button className="cta-button" onClick={() => setUserModal(true)} style={{marginLeft: 10}}>
+              {userLoggedIn ? 'My Appointments' : 'User Login'}
+            </button>
           </div>
         </div>
       </nav>
+      {userModal && (
+        userLoggedIn ?
+          <UserAppointments onLogout={() => { setUserLoggedIn(false); setUserModal(false); fetch(`${API_BASE}/logout.php`, { credentials: 'include' }); }} /> :
+          <UserAuth onAuth={() => { setUserLoggedIn(true); setUserModal(false); }} />
+      )}
     </header>
   );
 };
