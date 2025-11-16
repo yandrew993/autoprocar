@@ -1,0 +1,10 @@
+<?php
+// Simple session-based auth
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Not authenticated']);
+    exit;
+}
+$user_id = $_SESSION['user_id'];
+$role = $_SESSION['role'];

@@ -1,17 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.scss';
 
-const ADMIN_CREDENTIALS = {
-  username: 'John_Paul',
-  password: '#0111469688Jp',
-};
+// API helpers
+const API_BASE = 'https://yourdomain.com/backend'; // Update to your actual backend URL
 
-const getAppointments = () => JSON.parse(localStorage.getItem('autocare_appointments')) || [];
-const setAppointments = (apts) => localStorage.setItem('autocare_appointments', JSON.stringify(apts));
+async function adminLogin(username, password) {
+  const res = await fetch(`${API_BASE}/login.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+async function adminLogout() {
+  await fetch(`${API_BASE}/logout.php`, { credentials: 'include' });
+}
+
+async function fetchAppointments() {
+  const res = await fetch(`${API_BASE}/get_appointments.php?all=1`, { credentials: 'include' });
+  return res.json();
+}
+
+async function deleteAppointment(id) {
+  await fetch(`${API_BASE}/delete_appointment.php?id=${id}`, { credentials: 'include' });
+}
 
 const AdminPanel = () => {
   const [showModal, setShowModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('adminLoggedIn') === 'true');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
@@ -19,13 +37,13 @@ const AdminPanel = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      setAppointmentsState(getAppointments());
+      fetchAppointments().then(setAppointmentsState);
     }
   }, [isLoggedIn, showModal]);
 
-  const handleLogin = () => {
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-      localStorage.setItem('adminLoggedIn', 'true');
+  const handleLogin = async () => {
+    const result = await adminLogin(username, password);
+    if (result.success && result.role === 'admin') {
       setIsLoggedIn(true);
       setLoginError(false);
       setUsername('');
@@ -35,31 +53,18 @@ const AdminPanel = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.setItem('adminLoggedIn', 'false');
+  const handleLogout = async () => {
+    await adminLogout();
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
     setLoginError(false);
   };
 
-  const handleDelete = (id) => {
-    const updated = appointments.filter((apt) => apt.id !== id);
-    setAppointments(updated);
-    setAppointmentsState(updated);
+  const handleDelete = async (id) => {
+    await deleteAppointment(id);
+    setAppointmentsState(await fetchAppointments());
   };
-
-  const handleClearAll = () => {
-    if (window.confirm('Are you sure you want to delete ALL appointments? This cannot be undone.')) {
-      setAppointments([]);
-      setAppointmentsState([]);
-    }
-  };
-
-  // Save appointments to localStorage when changed
-  useEffect(() => {
-    if (isLoggedIn) setAppointments(appointments);
-  }, [appointments, isLoggedIn]);
 
   // Modal close on outside click or Escape
   useEffect(() => {
