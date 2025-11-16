@@ -4,6 +4,10 @@
   color: white;
 }
 
+.why-choose .section-title {
+  color: white !important;
+}
+
 .section-title {
   color: white;
   font-weight: 400;
@@ -17,10 +21,9 @@
   .section-title {
     font-size: 1.4rem;
     margin-bottom: 1.2rem;
-    font-weight: 400;
   }
-  .why-choose {
-    padding: 1.2rem 0 2.5rem 0;
+  .feature h3 {
+    font-size: 1.1rem;
   }
 }
 
@@ -28,10 +31,9 @@
   .section-title {
     font-size: 1.1rem;
     margin-bottom: 0.7rem;
-    font-weight: 400;
   }
-  .why-choose {
-    padding: 0.7rem 0 1.5rem 0;
+  .feature h3 {
+    font-size: 0.95rem;
   }
 }
 

@@ -83,7 +83,24 @@
 }
 
 @media (max-width: 768px) {
+  .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .service-card h3 {
+    font-size: 1.1rem;
+  }
   .service-card {
     padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
+  }
+  .service-card h3 {
+    font-size: 0.95rem;
   }
 }

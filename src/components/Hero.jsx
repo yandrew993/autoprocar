@@ -32,25 +32,25 @@ const Hero = () => {
 
   return (
     <section id="home" className="hero">
-      <div className="hero-content">
-        <h1>Expert Car Repair You Can Trust</h1>
-        <p>Serving the community with over 15 years of experience in professional auto repair and maintenance. Your vehicle's health is our top priority.</p>
-        <div className="hero-buttons">
-          <a href="#booking" className="btn primary">Book an Appointment</a>
-          <a href="#services" className="btn secondary">Our Services</a>
+      <div className="hero-inner">
+        <div className="hero-content">
+          <h1>Expert Car Repair You Can Trust</h1>
+          <p>Serving the community with over 15 years of experience in professional auto repair and maintenance. Your vehicle's health is our top priority.</p>
+          <div className="hero-buttons">
+            <a href="#booking" className="btn primary">Book an Appointment</a>
+          </div>
         </div>
-      </div>
-      <div className="hero-image">
         <div className="slideshow-container">
-          {slidesData.map((slide, idx) => (
-            <img
-              key={idx}
-              src={slide.src}
-              alt={slide.alt}
-              className={`slide${idx === currentSlide ? ' active' : ''}`}
-              style={{ display: idx === currentSlide ? 'block' : 'none' }}
-            />
-          ))}
+          <div className="slideshow-wrapper">
+            {slidesData.map((slide, idx) => (
+              <img
+                key={idx}
+                src={slide.src}
+                alt={slide.alt}
+                className={`slide${idx === currentSlide ? ' active' : ''}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
