@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Booking.scss';
 
+const API_BASE = 'https://autoprocar.com/backend';
+
 const getTomorrow = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -30,33 +32,44 @@ const Booking = () => {
     setForm((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, phone, vehicle, service, date } = form;
     if (!name || !phone || !vehicle || !service || !date) {
       alert('Please fill in all required fields.');
       return;
     }
-    const formData = {
-      ...form,
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      status: 'pending',
-    };
-    const existing = JSON.parse(localStorage.getItem('autocare_appointments')) || [];
-    existing.push(formData);
-    localStorage.setItem('autocare_appointments', JSON.stringify(existing));
-    setSuccess(true);
-    setForm({
-      name: '',
-      phone: '',
-      email: '',
-      vehicle: '',
-      service: '',
-      date: getTomorrow(),
-      description: '',
+    // Send to backend
+    const res = await fetch(`${API_BASE}/book_appointment.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        vehicle: form.vehicle,
+        service: form.service,
+        date: form.date,
+        description: form.description,
+      }),
+      credentials: 'include',
     });
-    setTimeout(() => setSuccess(false), 5000);
+    const data = await res.json();
+    if (data.success) {
+      setSuccess(true);
+      setForm({
+        name: '',
+        phone: '',
+        email: '',
+        vehicle: '',
+        service: '',
+        date: getTomorrow(),
+        description: '',
+      });
+      setTimeout(() => setSuccess(false), 5000);
+    } else {
+      alert(data.error || 'Failed to book appointment.');
+    }
   };
 
   return (

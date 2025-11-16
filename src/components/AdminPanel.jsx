@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AdminPanel.scss';
 
 // API helpers
-const API_BASE = 'https://yourdomain.com/backend'; // Update to your actual backend URL
+const API_BASE = 'https://autoprocar.com/backend'; // Update to your actual backend URL
 
 async function adminLogin(username, password) {
   const res = await fetch(`${API_BASE}/login.php`, {
@@ -66,6 +66,16 @@ const AdminPanel = () => {
     setAppointmentsState(await fetchAppointments());
   };
 
+  const handleStatusChange = async (id, status) => {
+    await fetch(`${API_BASE}/update_appointment.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status }),
+      credentials: 'include',
+    });
+    setAppointmentsState(await fetchAppointments());
+  };
+
   // Modal close on outside click or Escape
   useEffect(() => {
     const handleKey = (e) => {
@@ -126,8 +136,8 @@ const AdminPanel = () => {
                 </div>
                 <div id="adminStats">
                   <p>Total Appointments: <span id="totalAppointments">{appointments.length}</span></p>
-                  <button className="btn primary" onClick={() => setAppointmentsState(getAppointments())}>Refresh</button>
-                  <button className="btn secondary" style={{background: '#e53e3e'}} onClick={handleClearAll}>Clear All</button>
+                  <button className="btn primary" onClick={async () => setAppointmentsState(await fetchAppointments())}>Refresh</button>
+                  {/* Clear All functionality would require a backend endpoint for batch delete */}
                 </div>
                 <div id="appointmentsList">
                   <table className="appointments-table">
@@ -155,6 +165,15 @@ const AdminPanel = () => {
                             <button className="delete-btn" onClick={() => handleDelete(apt.id)}>
                               <i className="fas fa-trash"></i> Delete
                             </button>
+                            {apt.status === 'pending' && (
+                              <>
+                                <button className="btn secondary" style={{marginLeft: 8}} onClick={() => handleStatusChange(apt.id, 'accepted')}>Accept</button>
+                                <button className="btn secondary" style={{marginLeft: 8, background: '#e53e3e'}} onClick={() => handleStatusChange(apt.id, 'rejected')}>Reject</button>
+                              </>
+                            )}
+                            {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
+                            {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
+                            {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
                           </td>
                         </tr>
                       ))}
