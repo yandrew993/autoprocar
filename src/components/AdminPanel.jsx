@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AdminPanel.scss';
 
 // API helpers
-const API_BASE = 'https://autoprocar.com/backend'; // Update to your actual backend URL
+const API_BASE = 'https://backend.autoprocar.com'; // Update to your actual backend URL
 
 async function adminLogin(username, password) {
   const res = await fetch(`${API_BASE}/login.php`, {

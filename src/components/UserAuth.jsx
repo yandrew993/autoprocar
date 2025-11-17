@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const API_BASE = 'https://autoprocar.com/backend';
+const API_BASE = 'https://backend.autoprocar.com';
 
 export default function UserAuth({ onAuth }) {
   const [isLogin, setIsLogin] = useState(true);

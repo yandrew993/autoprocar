@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-const API_BASE = 'https://autoprocar.com/backend';
+const API_BASE = 'https://backend.autoprocar.com';
 
 export default function UserAppointments({ onLogout }) {
   const [appointments, setAppointments] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Booking.scss';
 
-const API_BASE = 'https://autoprocar.com/backend';
+const API_BASE = 'https://backend.autoprocar.com';
 
 const getTomorrow = () => {
   const tomorrow = new Date();

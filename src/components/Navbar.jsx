@@ -3,7 +3,7 @@ import './Navbar.scss';
 import UserAuth from './UserAuth';
 import UserAppointments from './UserAppointments';
 
-const API_BASE = 'https://autoprocar.com/backend';
+const API_BASE = 'https://backend.autoprocar.com';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
