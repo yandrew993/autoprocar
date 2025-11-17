@@ -1,49 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.scss';
-
-// API helpers
-const API_BASE = 'https://backend.autoprocar.com'; // Update to your actual backend URL
-
-async function adminLogin(username, password) {
-  const res = await fetch(`${API_BASE}/login.php`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-    credentials: 'include',
-  });
-  return res.json();
-}
-
-async function adminLogout() {
-  await fetch(`${API_BASE}/logout.php`, { credentials: 'include' });
-}
-
-async function fetchAppointments() {
-  const res = await fetch(`${API_BASE}/get_appointments.php?all=1`, { credentials: 'include' });
-  return res.json();
-}
-
-async function deleteAppointment(id) {
-  await fetch(`${API_BASE}/delete_appointment.php?id=${id}`, { credentials: 'include' });
-}
+const ADMIN_CREDENTIALS = {
+  username: 'John_Paul',
+  password: '#0111469688Jp',
+};
+const getAppointments = () => JSON.parse(localStorage.getItem('autocare_appointments')) || [];
+const setAppointments = (apts) => localStorage.setItem('autocare_appointments', JSON.stringify(apts));
+const API_BASE = 'https://backend.autoprocar.com';
 
 const AdminPanel = () => {
   const [showModal, setShowModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('adminLoggedIn') === 'true');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [appointments, setAppointmentsState] = useState([]);
-
+  const [isRegister, setIsRegister] = useState(false);
+  const [email, setEmail] = useState('');
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState('');
   useEffect(() => {
     if (isLoggedIn) {
-      fetchAppointments().then(setAppointmentsState);
+      setAppointmentsState(getAppointments());
     }
   }, [isLoggedIn, showModal]);
-
-  const handleLogin = async () => {
-    const result = await adminLogin(username, password);
-    if (result.success && result.role === 'admin') {
+  const handleLogin = () => {
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      localStorage.setItem('adminLoggedIn', 'true');
       setIsLoggedIn(true);
       setLoginError(false);
       setUsername('');
@@ -52,30 +35,55 @@ const AdminPanel = () => {
       setLoginError(true);
     }
   };
-
-  const handleLogout = async () => {
-    await adminLogout();
+  const handleLogout = () => {
+    localStorage.setItem('adminLoggedIn', 'false');
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
     setLoginError(false);
   };
-
-  const handleDelete = async (id) => {
-    await deleteAppointment(id);
-    setAppointmentsState(await fetchAppointments());
+  const handleDelete = (id) => {
+    const updated = appointments.filter((apt) => apt.id !== id);
+    setAppointments(updated);
+    setAppointmentsState(updated);
   };
-
-  const handleStatusChange = async (id, status) => {
-    await fetch(`${API_BASE}/update_appointment.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status }),
-      credentials: 'include',
-    });
-    setAppointmentsState(await fetchAppointments());
+  const handleClearAll = () => {
+    if (window.confirm('Are you sure you want to delete ALL appointments? This cannot be undone.')) {
+      setAppointments([]);
+      setAppointmentsState([]);
+    }
   };
-
+  const handleRegister = async () => {
+    setRegisterError('');
+    setRegisterSuccess('');
+    if (!username || !email || !password) {
+      setRegisterError('All fields are required.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/register.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRegisterSuccess('Registration successful! You can now log in.');
+        setIsRegister(false);
+        setUsername('');
+        setPassword('');
+        setEmail('');
+      } else {
+        setRegisterError(data.error || 'Registration failed.');
+      }
+    } catch (e) {
+      setRegisterError('Network error. Please try again.');
+    }
+  };
+  // Save appointments to localStorage when changed
+  useEffect(() => {
+    if (isLoggedIn) setAppointments(appointments);
+  }, [appointments, isLoggedIn]);
   // Modal close on outside click or Escape
   useEffect(() => {
     const handleKey = (e) => {
@@ -91,7 +99,6 @@ const AdminPanel = () => {
       document.removeEventListener('mousedown', handleClick);
     };
   }, [showModal]);
-
   return (
     <>
       <div className="admin-panel">
@@ -103,28 +110,55 @@ const AdminPanel = () => {
         <div className="admin-modal">
           <div className="admin-content">
             <div className="admin-header">
-              <h2>{isLoggedIn ? 'Appointment Management' : 'Staff Login'}</h2>
+              <h2>{isLoggedIn ? 'Appointment Management' : (isRegister ? 'User Registration' : 'Staff Login')}</h2>
               <button className="close-admin" onClick={() => setShowModal(false)}>Close</button>
             </div>
             {!isLoggedIn ? (
-              <div id="loginSection">
-                <div className="login-form">
-                  <h3>Authorized Personnel Only</h3>
+              isRegister ? (
+                <div className="register-form">
+                  <h3>Register as a User</h3>
                   <div className="form-group">
-                    <label htmlFor="adminUsername">Username</label>
-                    <input type="text" id="adminUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
+                    <label htmlFor="regUsername">Username</label>
+                    <input type="text" id="regUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="adminPassword">Password</label>
-                    <input type="password" id="adminPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+                    <label htmlFor="regEmail">Email</label>
+                    <input type="email" id="regEmail" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" />
                   </div>
-                  {loginError && <div className="error-message">Invalid credentials. Please try again.</div>}
-                  <button className="btn primary" style={{width: '100%'}} onClick={handleLogin}>Login</button>
-                  <div className="contact-admin">
-                    <p>Need access? Contact the manager.</p>
+                  <div className="form-group">
+                    <label htmlFor="regPassword">Password</label>
+                    <input type="password" id="regPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleRegister()} />
+                  </div>
+                  {registerError && <div className="error-message">{registerError}</div>}
+                  {registerSuccess && <div className="success-message">{registerSuccess}</div>}
+                  <button className="btn primary" style={{width: '100%'}} onClick={handleRegister}>Register</button>
+                  <div className="switch-auth">
+                    <button className="btn secondary" onClick={() => { setIsRegister(false); setRegisterError(''); setRegisterSuccess(''); }}>Back to Login</button>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div id="loginSection">
+                  <div className="login-form">
+                    <h3>Authorized Personnel Only</h3>
+                    <div className="form-group">
+                      <label htmlFor="adminUsername">Username</label>
+                      <input type="text" id="adminUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="adminPassword">Password</label>
+                      <input type="password" id="adminPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+                    </div>
+                    {loginError && <div className="error-message">Invalid credentials. Please try again.</div>}
+                    <button className="btn primary" style={{width: '100%'}} onClick={handleLogin}>Login</button>
+                    <div className="switch-auth">
+                      <button className="btn secondary" onClick={() => { setIsRegister(true); setLoginError(false); }}>Register as User</button>
+                    </div>
+                    <div className="contact-admin">
+                      <p>Need access? Contact the manager.</p>
+                    </div>
+                  </div>
+                </div>
+              )
             ) : (
               <div id="adminSection">
                 <div className="admin-header">
@@ -136,8 +170,8 @@ const AdminPanel = () => {
                 </div>
                 <div id="adminStats">
                   <p>Total Appointments: <span id="totalAppointments">{appointments.length}</span></p>
-                  <button className="btn primary" onClick={async () => setAppointmentsState(await fetchAppointments())}>Refresh</button>
-                  {/* Clear All functionality would require a backend endpoint for batch delete */}
+                  <button className="btn primary" onClick={() => setAppointmentsState(getAppointments())}>Refresh</button>
+                  <button className="btn secondary" style={{background: '#e53e3e'}} onClick={handleClearAll}>Clear All</button>
                 </div>
                 <div id="appointmentsList">
                   <table className="appointments-table">
@@ -165,15 +199,6 @@ const AdminPanel = () => {
                             <button className="delete-btn" onClick={() => handleDelete(apt.id)}>
                               <i className="fas fa-trash"></i> Delete
                             </button>
-                            {apt.status === 'pending' && (
-                              <>
-                                <button className="btn secondary" style={{marginLeft: 8}} onClick={() => handleStatusChange(apt.id, 'accepted')}>Accept</button>
-                                <button className="btn secondary" style={{marginLeft: 8, background: '#e53e3e'}} onClick={() => handleStatusChange(apt.id, 'rejected')}>Reject</button>
-                              </>
-                            )}
-                            {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
-                            {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
-                            {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
                           </td>
                         </tr>
                       ))}
@@ -188,5 +213,4 @@ const AdminPanel = () => {
     </>
   );
 };
-
 export default AdminPanel;
