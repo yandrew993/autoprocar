@@ -3,7 +3,6 @@ import './AdminPanel.scss';
 const API_BASE = 'https://backend.autoprocar.com';
 
 const AdminPanel = () => {
-  const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState('');
   const [username, setUsername] = useState('');
@@ -19,7 +18,7 @@ const AdminPanel = () => {
     if (isLoggedIn) {
       fetchAppointments(role === 'admin').then(setAppointmentsState);
     }
-  }, [isLoggedIn, showModal, role]);
+  }, [isLoggedIn, role]);
 
   const handleLogin = async () => {
     setLoginError('');
@@ -102,154 +101,123 @@ const AdminPanel = () => {
     return res.json();
   }
 
-  // Modal close on outside click or Escape
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'Escape' && showModal) setShowModal(false);
-    };
-    const handleClick = (e) => {
-      if (e.target.classList.contains('admin-modal')) setShowModal(false);
-    };
-    document.addEventListener('keydown', handleKey);
-    document.addEventListener('mousedown', handleClick);
-    return () => {
-      document.removeEventListener('keydown', handleKey);
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [showModal]);
-
   return (
-    <>
-      <div className="admin-panel">
-        <button className="admin-btn" onClick={() => setShowModal(true)}>
-          <i className="fas fa-tools"></i>
-        </button>
+    <div className="admin-content" style={{margin: '2rem auto', maxWidth: 800}}>
+      <div className="admin-header">
+        <h2>{isLoggedIn ? (role === 'admin' ? 'Appointment Management' : 'My Appointments') : (isRegister ? 'User Registration' : 'Staff/User Login')}</h2>
       </div>
-      {showModal && (
-        <div className="admin-modal">
-          <div className="admin-content">
-            <div className="admin-header">
-              <h2>{isLoggedIn ? (role === 'admin' ? 'Appointment Management' : 'My Appointments') : (isRegister ? 'User Registration' : 'Staff/User Login')}</h2>
-              <button className="close-admin" onClick={() => setShowModal(false)}>Close</button>
+      {!isLoggedIn ? (
+        isRegister ? (
+          <div className="register-form">
+            <h3>Register as a User</h3>
+            <div className="form-group">
+              <label htmlFor="regUsername">Username</label>
+              <input type="text" id="regUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
             </div>
-            {!isLoggedIn ? (
-              isRegister ? (
-                <div className="register-form">
-                  <h3>Register as a User</h3>
-                  <div className="form-group">
-                    <label htmlFor="regUsername">Username</label>
-                    <input type="text" id="regUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="regEmail">Email</label>
-                    <input type="email" id="regEmail" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="regPassword">Password</label>
-                    <input type="password" id="regPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleRegister()} />
-                  </div>
-                  {registerError && <div className="error-message">{registerError}</div>}
-                  {registerSuccess && <div className="success-message">{registerSuccess}</div>}
-                  <button className="btn primary" style={{width: '100%'}} onClick={handleRegister}>Register</button>
-                  <div className="switch-auth">
-                    <button className="btn secondary" onClick={() => { setIsRegister(false); setRegisterError(''); setRegisterSuccess(''); }}>Back to Login</button>
-                  </div>
-                </div>
-              ) : (
-                <div id="loginSection">
-                  <div className="login-form">
-                    <h3>Staff or User Login</h3>
-                    <div className="form-group">
-                      <label htmlFor="adminUsername">Username</label>
-                      <input type="text" id="adminUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="adminPassword">Password</label>
-                      <input type="password" id="adminPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
-                    </div>
-                    {loginError && <div className="error-message">{loginError}</div>}
-                    <button className="btn primary" style={{width: '100%'}} onClick={handleLogin}>Login</button>
-                    <div className="switch-auth">
-                      <button className="btn secondary" onClick={() => { setIsRegister(true); setLoginError(''); }}>Register as User</button>
-                    </div>
-                    <div className="contact-admin">
-                      <p>Staff? Contact the manager for access.</p>
-                    </div>
-                  </div>
-                </div>
-              )
-            ) : (
-              <div id="adminSection">
-                <div className="admin-header">
-                  <h2>{role === 'admin' ? 'Appointment Management' : 'My Appointments'}</h2>
-                  <div>
-                    <button className="btn secondary" onClick={handleLogout} style={{marginRight: 10}}>Logout</button>
-                    <button className="close-admin" onClick={() => setShowModal(false)}>Close</button>
-                  </div>
-                </div>
-                <div id="adminStats">
-                  <p>Total Appointments: <span id="totalAppointments">{appointments.length}</span></p>
-                  <button className="btn primary" onClick={async () => setAppointmentsState(await fetchAppointments(role === 'admin'))}>Refresh</button>
-                </div>
-                <div id="appointmentsList">
-                  <table className="appointments-table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Service</th>
-                        <th>Vehicle</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="appointmentsTableBody">
-                      {appointments.length === 0 ? (
-                        <tr><td colSpan="6" style={{textAlign: 'center'}}>No appointments found.</td></tr>
-                      ) : appointments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map(apt => (
-                        <tr key={apt.id}>
-                          <td>{apt.date}</td>
-                          <td>{apt.name}</td>
-                          <td>{apt.phone}</td>
-                          <td>{apt.service}</td>
-                          <td>{apt.vehicle}</td>
-                          <td>
-                            {role === 'admin' && (
-                              <>
-                                <button className="delete-btn" onClick={() => handleDelete(apt.id)}>
-                                  <i className="fas fa-trash"></i> Delete
-                                </button>
-                                {apt.status === 'pending' && (
-                                  <>
-                                    <button className="btn secondary" style={{marginLeft: 8}} onClick={() => handleStatusChange(apt.id, 'accepted')}>Approve</button>
-                                    <button className="btn secondary" style={{marginLeft: 8, background: '#e53e3e'}} onClick={() => handleStatusChange(apt.id, 'rejected')}>Reject</button>
-                                  </>
-                                )}
-                                {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
-                                {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
-                                {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
-                              </>
-                            )}
-                            {role !== 'admin' && (
-                              <>
-                                {apt.status === 'pending' && <span style={{marginLeft: 8, color: '#bfa600'}}>Pending</span>}
-                                {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
-                                {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
-                                {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            <div className="form-group">
+              <label htmlFor="regEmail">Email</label>
+              <input type="email" id="regEmail" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="regPassword">Password</label>
+              <input type="password" id="regPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleRegister()} />
+            </div>
+            {registerError && <div className="error-message">{registerError}</div>}
+            {registerSuccess && <div className="success-message">{registerSuccess}</div>}
+            <button className="btn primary" style={{width: '100%'}} onClick={handleRegister}>Register</button>
+            <div className="switch-auth">
+              <span>Have an account? <button className="btn secondary" style={{display:'inline',marginLeft:4}} onClick={() => { setIsRegister(false); setRegisterError(''); setRegisterSuccess(''); }}>Click Login</button></span>
+            </div>
+          </div>
+        ) : (
+          <div id="loginSection">
+            <div className="login-form">
+              <h3>Staff or User Login</h3>
+              <div className="form-group">
+                <label htmlFor="adminUsername">Username</label>
+                <input type="text" id="adminUsername" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter username" />
               </div>
-            )}
+              <div className="form-group">
+                <label htmlFor="adminPassword">Password</label>
+                <input type="password" id="adminPassword" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+              </div>
+              {loginError && <div className="error-message">{loginError}</div>}
+              <button className="btn primary" style={{width: '100%'}} onClick={handleLogin}>Login</button>
+              <div className="switch-auth">
+                <span>Don't have an account? <button className="btn secondary" style={{display:'inline',marginLeft:4}} onClick={() => { setIsRegister(true); setLoginError(''); }}>Click Register</button></span>
+              </div>
+              
+            </div>
+          </div>
+        )
+      ) : (
+        <div id="adminSection">
+          <div className="admin-header">
+            <h2>{role === 'admin' ? 'Appointment Management' : 'My Appointments'}</h2>
+            <div>
+              <button className="btn secondary" onClick={handleLogout} style={{marginRight: 10}}>Logout</button>
+            </div>
+          </div>
+          <div id="adminStats">
+            <p>Total Appointments: <span id="totalAppointments">{appointments.length}</span></p>
+            <button className="btn primary" onClick={async () => setAppointmentsState(await fetchAppointments(role === 'admin'))}>Refresh</button>
+          </div>
+          <div id="appointmentsList">
+            <table className="appointments-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Service</th>
+                  <th>Vehicle</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentsTableBody">
+                {appointments.length === 0 ? (
+                  <tr><td colSpan="6" style={{textAlign: 'center'}}>No appointments found.</td></tr>
+                ) : appointments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map(apt => (
+                  <tr key={apt.id}>
+                    <td>{apt.date}</td>
+                    <td>{apt.name}</td>
+                    <td>{apt.phone}</td>
+                    <td>{apt.service}</td>
+                    <td>{apt.vehicle}</td>
+                    <td>
+                      {role === 'admin' && (
+                        <>
+                          <button className="delete-btn" onClick={() => handleDelete(apt.id)}>
+                            <i className="fas fa-trash"></i> Delete
+                          </button>
+                          {apt.status === 'pending' && (
+                            <>
+                              <button className="btn secondary" style={{marginLeft: 8}} onClick={() => handleStatusChange(apt.id, 'accepted')}>Approve</button>
+                              <button className="btn secondary" style={{marginLeft: 8, background: '#e53e3e'}} onClick={() => handleStatusChange(apt.id, 'rejected')}>Reject</button>
+                            </>
+                          )}
+                          {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
+                          {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
+                          {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
+                        </>
+                      )}
+                      {role !== 'admin' && (
+                        <>
+                          {apt.status === 'pending' && <span style={{marginLeft: 8, color: '#bfa600'}}>Pending</span>}
+                          {apt.status === 'accepted' && <span style={{marginLeft: 8, color: 'green'}}>Accepted</span>}
+                          {apt.status === 'rejected' && <span style={{marginLeft: 8, color: 'red'}}>Rejected</span>}
+                          {apt.status === 'completed' && <span style={{marginLeft: 8, color: 'blue'}}>Completed</span>}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default AdminPanel;

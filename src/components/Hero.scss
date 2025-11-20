@@ -5,6 +5,9 @@
   display: flex;
   align-items: center;
   min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .hero-inner {
@@ -29,11 +32,13 @@
   line-height: 1.2;
 }
 
-.hero-content p {
+.hero-desc {
   font-size: 1.25rem;
   margin-bottom: 2rem;
   opacity: 0.9;
   max-width: 600px;
+  margin-right: 0;
+  transition: font-size 0.2s, margin 0.2s;
 }
 
 .hero-buttons {
@@ -124,6 +129,10 @@
     flex-direction: column;
     text-align: center;
     padding: 120px 0 40px;
+    min-height: 100vh;
+    height: 100dvh;
+    box-sizing: border-box;
+    padding-top: 70px; /* Adjust for fixed navbar height */
   }
   
   .hero-inner {
@@ -136,6 +145,18 @@
     padding: 0 10px;
     padding-right: 0; /* Remove right padding on mobile */
     width: 100%;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .hero-desc {
+    font-size: 1rem;
+    margin-right: 8vw;
+    margin-left: 8vw;
+    max-width: 90vw;
   }
   
   .slideshow-container {
@@ -155,8 +176,20 @@
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding-top: 60px; /* Slightly less for very small screens */
+  }
+  
   .hero-content h1 {
-    font-size: 2rem;
+    font-size: 2.7rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .hero-desc {
+    font-size: 0.95rem;
+    margin-right: 4vw;
+    margin-left: 4vw;
+    max-width: 98vw;
   }
   
   .slideshow-container {

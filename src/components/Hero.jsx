@@ -31,13 +31,28 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="home" className="hero">
-      <div className="hero-inner">
+    <section
+      id="home"
+      className="hero"
+      style={{
+        minHeight: '100vh',
+        height: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        padding: 0,
+      }}
+    >
+      <div className="hero-inner" style={{ width: '100%' }}>
         <div className="hero-content">
           <h1>Expert Car Repair You Can Trust</h1>
-          <p>Serving the community with over 15 years of experience in professional auto repair and maintenance. Your vehicle's health is our top priority.</p>
+          <p className="hero-desc">
+            Serving the community with over 15 years of experience in professional
+            auto repair and maintenance. Your vehicle's health is our top priority.
+          </p>
           <div className="hero-buttons">
-            <a href="#booking" className="btn primary">Book an Appointment</a>
+            <a href="#booking" className="btn primary">
+              Book an Appointment
+            </a>
           </div>
         </div>
         <div className="slideshow-container">
@@ -47,7 +62,9 @@ const Hero = () => {
                 key={idx}
                 src={slide.src}
                 alt={slide.alt}
-                className={`slide${idx === currentSlide ? ' active' : ''}`}
+                className={`slide${
+                  idx === currentSlide ? ' active' : ''
+                }`}
               />
             ))}
           </div>

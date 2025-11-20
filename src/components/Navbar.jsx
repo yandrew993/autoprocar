@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Navbar.scss';
+import { Link } from 'react-router-dom';
 import UserAuth from './UserAuth';
 import UserAppointments from './UserAppointments';
 
@@ -23,21 +24,7 @@ const Navbar = () => {
       }
     };
     window.addEventListener('scroll', handleScroll);
-    // Smooth scrolling
-    const anchors = document.querySelectorAll('a[href^="#"]');
-    const handleClick = function (e) {
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setMenuOpen(false); // close menu on click
-      }
-    };
-    anchors.forEach(anchor => anchor.addEventListener('click', handleClick));
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      anchors.forEach(anchor => anchor.removeEventListener('click', handleClick));
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -54,17 +41,15 @@ const Navbar = () => {
             <span style={{transform: menuOpen ? 'rotate(-45deg) translate(7px, -6px)' : 'none'}}></span>
           </div>
           <ul className={`nav-menu${menuOpen ? ' open' : ''}`}>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
+            <li><Link to="/services" onClick={() => setMenuOpen(false)}>Services</Link></li>
+            <li><Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link></li>
+            <li><Link to="/testimonials" onClick={() => setMenuOpen(false)}>Testimonials</Link></li>
+            <li><Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></li>
+            <li><Link to="/myappointments" onClick={() => setMenuOpen(false)}>My Appointments</Link></li>
           </ul>
           <div className="nav-cta">
-            <a href="#booking" className="cta-button">Book Appointment</a>
-            <button className="cta-button" onClick={() => setUserModal(true)} style={{marginLeft: 10}}>
-              {userLoggedIn ? 'My Appointments' : 'User Login'}
-            </button>
+            <Link to="/book" className="cta-button book-btn">Book Appointment</Link>
           </div>
         </div>
       </nav>

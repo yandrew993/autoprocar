@@ -4,12 +4,8 @@
   color: white;
 }
 
-.why-choose .section-title {
-  color: white !important;
-}
-
 .section-title {
-  color: white;
+  color: #fff !important;
   font-weight: 400;
   margin-top: 0;
   margin-bottom: 2.5rem;
@@ -21,19 +17,23 @@
   .section-title {
     font-size: 1.4rem;
     margin-bottom: 1.2rem;
+    font-weight: 400;
+    color: #fff !important;
   }
-  .feature h3 {
-    font-size: 1.1rem;
+  .why-choose {
+    padding: 1.2rem 0 2.5rem 0;
   }
 }
 
 @media (max-width: 480px) {
   .section-title {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     margin-bottom: 0.7rem;
+    font-weight: 400;
+    color: #fff !important;
   }
-  .feature h3 {
-    font-size: 0.95rem;
+  .why-choose {
+    padding: 0.7rem 0 1.5rem 0;
   }
 }
 

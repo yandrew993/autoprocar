@@ -2,27 +2,36 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TrustSignals from './components/TrustSignals';
-import Services from './components/Services';
+//import Services from './components/Services';
 import WhyChoose from './components/WhyChoose';
-import Booking from './components/Booking';
+//import Booking from './components/Booking';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
-import AdminPanel from './components/AdminPanel';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MyAppointmentsPage from './pages/MyAppointmentsPage';
+import ServicesPage from './pages/ServicesPage';
+import BookingPage from './pages/BookingPage';
 import './App.scss';
 
 function App() {
   return (
-    <div className="App">
+    <Router>
       <Navbar />
-      <Hero />
-      <TrustSignals />
-      <Services />
-      <WhyChoose />
-      <Booking />
-      <Testimonials />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Hero />
+            <TrustSignals />
+            <WhyChoose />
+            <Testimonials />
+          </>
+        } />
+        <Route path="/myappointments" element={<MyAppointmentsPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/book" element={<BookingPage />} />
+      </Routes>
       <Footer />
-      <AdminPanel />
-    </div>
+    </Router>
   );
 }
 
