@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Hero.scss';
 
 const slidesData = [
@@ -50,9 +51,9 @@ const Hero = () => {
             auto repair and maintenance. Your vehicle's health is our top priority.
           </p>
           <div className="hero-buttons">
-            <a href="#booking" className="btn primary">
+            <Link to="/myappointments" className="btn primary">
               Book an Appointment
-            </a>
+            </Link>
           </div>
         </div>
         <div className="slideshow-container">
