@@ -32,8 +32,8 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="nav-container">
           <div className="logo">
-            <img src="/logo.png" alt="AutoCare Pro Logo" style={{height: '40px', verticalAlign: 'middle', marginRight: '10px'}} />
-            <h2>Auto<span>Care</span> Pro</h2>
+            <img src="/Logo-preview.png" alt="AutoPro Car Logo" style={{height: '80px', verticalAlign: 'middle', marginRight: '0px'}} />
+            <h2>Auto<span>Pro</span> Car</h2>
           </div>
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation" tabIndex={0} role="button">
             <span style={{transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'}}></span>
