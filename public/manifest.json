@@ -1,25 +1,26 @@
 {
-  "short_name": "Autopro Car",
-  "name": "Create React App Sample",
+  "short_name": "AutoCare Pro",
+  "name": "AutoCare Pro - Expert Car Repair",
+  "description": "Professional car repair and maintenance services with expert technicians",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "80x80 38x38 30x30 20x20",
-      "type": "image/x-icon"
+      "src": "Logo-preview.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "Logo-preview.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "Logo-preview.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait-primary",
+  "theme_color": "#1a365d",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "categories": ["automotive", "business", "utilities"]
 }

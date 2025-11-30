@@ -20,9 +20,25 @@
   position: relative;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Small controlled gap between logo image and text */
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .logo h2 {
   color: white;
   font-weight: 700;
+  margin: 0;
+  font-size: 1.8rem;
+  white-space: nowrap;
 }
 
 .logo span {
@@ -81,6 +97,18 @@
 }
 
 @media (max-width: 768px) {
+  .logo {
+    gap: 6px; /* Smaller gap on mobile */
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .logo h2 {
+    font-size: 1.4rem;
+  }
+  
   .nav-menu {
     display: none;
     position: absolute;
@@ -123,5 +151,19 @@
   }
   .nav-container {
     padding-right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    gap: 4px; /* Even smaller gap on very small screens */
+  }
+  
+  .logo img {
+    height: 35px;
+  }
+  
+  .logo h2 {
+    font-size: 1.2rem;
   }
 }
