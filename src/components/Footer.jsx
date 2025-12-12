@@ -42,10 +42,12 @@ const Footer = () => (
         </div>
         <div className="footer-section">
           <h3>Quick Links</h3>
-          <a href="#services">Services</a>
-          <a href="#about">About Us</a>
-          <a href="#booking">Book Appointment</a>
-          <a href="#contact">Contact</a>
+          <ul>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#booking">Book Appointment</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
         </div>
       </div>
       <div className="footer-bottom">
