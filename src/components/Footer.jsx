@@ -7,25 +7,25 @@ const Footer = () => (
       <div className="footer-content">
         <div className="footer-section">
           <h3>Contact Info</h3>
-          <p><i className="fas fa-phone"></i> 0740166854</p>
-          <p><i className="fas fa-envelope"></i> johnpaul6097@gmail.com</p>
+          <p><i className="fas fa-phone"></i> 0722680547</p>
+          <p><i className="fas fa-envelope"></i> autoprocar6@gmail.com</p>
           <p><i className="fas fa-map-marker-alt"></i> A long the Northern bypass</p>
           <div className="social-media">
             <h4>Follow Us</h4>
             <div className="social-icons">
-              <a href="https://facebook.com" className="social-icon facebook" target="_blank" rel="noopener noreferrer" title="Facebook">
+              <a href="https://web.facebook.com/profile.php?id=61585060049039" className="social-icon facebook" target="_blank" rel="noopener noreferrer" title="Facebook">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a href="https://twitter.com" className="social-icon twitter" target="_blank" rel="noopener noreferrer" title="Twitter">
+              <a href="https://x.com/autopro_car" className="social-icon twitter" target="_blank" rel="noopener noreferrer" title="Twitter">
                 <i className="fab fa-twitter"></i>
               </a>
               <a href="https://instagram.com" className="social-icon instagram" target="_blank" rel="noopener noreferrer" title="Instagram">
                 <i className="fab fa-instagram"></i>
               </a>
-              <a href="https://tiktok.com" className="social-icon tiktok" target="_blank" rel="noopener noreferrer" title="TikTok">
+              <a href="https://www.tiktok.com/@autopro.car" className="social-icon tiktok" target="_blank" rel="noopener noreferrer" title="TikTok">
                 <i className="fab fa-tiktok"></i>
               </a>
-              <a href="https://wa.me/254740166854" className="social-icon whatsapp" target="_blank" rel="noopener noreferrer" title="WhatsApp">
+              <a href="https://wa.me/254722680547" className="social-icon whatsapp" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                 <i className="fab fa-whatsapp"></i>
               </a>
               <a href="https://www.youtube.com/@cryptozone-w9e" className="social-icon youtube" target="_blank" rel="noopener noreferrer" title="YouTube">
